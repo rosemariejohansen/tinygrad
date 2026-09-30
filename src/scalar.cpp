@@ -1,13 +1,17 @@
-#include "tinygrad/scalar.hpp"
+#include "tinygrad/scalar.hpp"  
 
 namespace tinygrad {
 
 Scalar::Scalar(double value)
-    : value_(value) {
+    : node_(std::make_shared<Node>(Node{value, 0.0})){
 }
 
 double Scalar::value() const {
-    return value_;
+    return node_->value;
+}
+
+double Scalar::grad() const{
+    return node_->grad;
 }
 
 }
