@@ -13,10 +13,27 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(tinygrad
     src/main.cpp
-    src/scalar.cpp  
+    src/scalar.cpp
 )
 
 target_include_directories(tinygrad
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+enable_testing()
+
+add_executable(scalar_tests
+    tests/scalar_tests.cpp
+    src/scalar.cpp
+)
+
+target_include_directories(scalar_tests
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+add_test(
+    NAME scalar_tests
+    COMMAND scalar_tests
 )
