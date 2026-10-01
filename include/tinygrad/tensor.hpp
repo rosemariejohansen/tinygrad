@@ -31,4 +31,10 @@ private:
 
     std::size_t flatten_index(const std::vector<std::size_t>& indices) const;
 };
+
+Tensor operator+(const Tensor& lhs, const Tensor& rhs);
+Tensor operator-(const Tensor& lhs, const Tensor& rhs);
+Tensor operator*(const Tensor& lhs, const Tensor& rhs);
+Tensor operator/(const Tensor& lhs, const Tensor& rhs);
+
 }

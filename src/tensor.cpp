@@ -6,6 +6,37 @@
 
 namespace tinygrad {
 
+namespace {
+
+void check_same_shape(
+    const Tensor& lhs,
+    const Tensor& rhs
+) {
+    if(lhs.shape() != rhs.shape()) {
+        throw std::invalid_argument("Tensor shapes must match");
+    }
+}
+
+Tensor binary_operation(
+    const Tensor& lhs,
+    const Tensor& rhs,
+    auto operation
+) {
+    check_same_shape(lhs, rhs);
+
+    std::vector<double> result;
+
+    result.reserve(lhs.size());
+
+    for(std::size_t i = 0; i < lhs.size(); ++i) {
+        result.push_back(operation(lhs.data()[i], rhs.data()[i]));
+    }
+
+    return Tensor{std::move(result), lhs.shape()};
+}
+
+}
+
 Tensor::Tensor(
     std::vector<double> data,
     std::vector<std::size_t> shape
@@ -80,6 +111,46 @@ std::size_t Tensor::flatten_index(
     }
 
     return index;
+}
+
+Tensor operator+(const Tensor& lhs, const Tensor& rhs) {
+    return binary_operation(
+        lhs,
+        rhs,
+        [](double a, double b) {
+            return a + b;
+        }
+    );
+}
+
+Tensor operator-(const Tensor& lhs, const Tensor& rhs) {
+    return binary_operation(
+        lhs,
+        rhs,
+        [](double a, double b) {
+            return a - b;
+        }
+    );
+}
+
+Tensor operator*(const Tensor& lhs, const Tensor& rhs) {
+    return binary_operation(
+        lhs,
+        rhs,
+        [](double a, double b) {
+            return a * b;
+        }
+    );
+}
+
+Tensor operator/(const Tensor& lhs, const Tensor& rhs) {
+    return binary_operation(
+        lhs,
+        rhs,
+        [](double a, double b) {
+            return a / b;
+        }
+    );
 }
 
 }

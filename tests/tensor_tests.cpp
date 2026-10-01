@@ -127,6 +127,92 @@ void test_one_dimensional_initializer() {
     check(tensor.at({2}) == 3.0, "Initializer list last element");
 }
 
+void test_elementwise_addition() {
+    tinygrad::Tensor a{
+        std::vector<double>{1.0, 2.0, 3.0},
+        std::vector<std::size_t>{3}
+    };
+
+    tinygrad::Tensor b{
+        std::vector<double>{4.0, 5.0, 6.0},
+        std::vector<std::size_t>{3}
+    };
+
+    const tinygrad::Tensor c = a + b;
+
+    check(c.data() == std::vector<double>{5.0, 7.0, 9.0}, "Element-wise addition");
+}
+
+void test_elementwise_subtraction() {
+    tinygrad::Tensor a{
+        std::vector<double>{1.0, 2.0, 3.0},
+        std::vector<std::size_t>{3}
+    };
+
+    tinygrad::Tensor b{
+        std::vector<double>{4.0, 5.0, 6.0},
+        std::vector<std::size_t>{3}
+    };
+
+    const tinygrad::Tensor c = a - b;
+
+    check(c.data() == std::vector<double>{-3.0, -3.0, -3.0}, "Element-wise subtraction");
+}
+
+void test_elementwise_multiplication() {
+    tinygrad::Tensor a{
+        std::vector<double>{1.0, 2.0, 3.0},
+        std::vector<std::size_t>{3}
+    };
+
+    tinygrad::Tensor b{
+        std::vector<double>{4.0, 5.0, 6.0},
+        std::vector<std::size_t>{3}
+    };
+
+    const tinygrad::Tensor c = a * b;
+
+    check(c.data() == std::vector<double>{4.0, 10.0, 18.0}, "Element-wise multiplication");
+}
+
+void test_elementwise_division() {
+    tinygrad::Tensor a{
+        std::vector<double>{1.0, 2.0, 3.0},
+        std::vector<std::size_t>{3}
+    };
+
+    tinygrad::Tensor b{
+        std::vector<double>{4.0, 5.0, 6.0},
+        std::vector<std::size_t>{3}
+    };
+
+    const tinygrad::Tensor c = a / b;
+
+    check(c.data() == std::vector<double>{0.25,0.4, 0.5}, "Element-wise division");
+}
+
+void test_elementwise_shape_mismatch() {
+    tinygrad::Tensor a{
+        std::vector<double>{1.0, 2.0, 3.0},
+        std::vector<std::size_t>{3}
+    };
+
+    tinygrad::Tensor b{
+        std::vector<double>{4.0, 5.0},
+        std::vector<std::size_t>{2}
+    };
+
+    bool threw = false;
+    
+    try {
+        const auto c = a + b;
+    } catch (const std::invalid_argument&) {
+        threw = true;
+    }
+
+    check(threw, "Element-wise operation rejects different shapes");
+}
+
 }
 
 int main() {
@@ -137,6 +223,12 @@ int main() {
     test_invalid_number_of_indices();
     test_out_of_range_index();
     test_one_dimensional_initializer();
+    test_elementwise_addition();
+    test_elementwise_division();
+    test_elementwise_multiplication();
+    test_elementwise_subtraction();
+    test_elementwise_shape_mismatch();
+
     std::cout << "All Tensor tests passed.\n";
     return 0;  
 }
