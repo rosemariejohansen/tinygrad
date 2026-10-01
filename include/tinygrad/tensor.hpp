@@ -32,9 +32,26 @@ private:
     std::size_t flatten_index(const std::vector<std::size_t>& indices) const;
 };
 
+// Tensor <-> Tensor    
 Tensor operator+(const Tensor& lhs, const Tensor& rhs);
 Tensor operator-(const Tensor& lhs, const Tensor& rhs);
 Tensor operator*(const Tensor& lhs, const Tensor& rhs);
 Tensor operator/(const Tensor& lhs, const Tensor& rhs);
+
+// Unary
+Tensor operator-(const Tensor& tensor);
+
+// Tensor <-> scalar
+Tensor operator+(const Tensor& tensor, double scalar);
+Tensor operator+(double scalar, const Tensor& tensor);
+
+Tensor operator-(const Tensor& tensor, double scalar);
+Tensor operator-(double scalar, const Tensor& tensor);
+
+Tensor operator*(const Tensor& tensor, double scalar);
+Tensor operator*(double scalar, const Tensor& tensor);
+
+Tensor operator/(const Tensor& tensor, double scalar);
+Tensor operator/(double scalar, const Tensor& tensor);
 
 }

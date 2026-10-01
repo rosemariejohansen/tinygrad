@@ -35,6 +35,21 @@ Tensor binary_operation(
     return Tensor{std::move(result), lhs.shape()};
 }
 
+Tensor scalar_operation(
+    const Tensor& tensor,
+    double scalar,
+    auto operation
+) {
+    std::vector<double> result;
+    result.reserve(tensor.size());
+
+    for(const double value : tensor.data()) {
+        result.push_back(operation(value, scalar));
+    }
+
+    return Tensor{std::move(result), tensor.shape()};
+}
+
 }
 
 Tensor::Tensor(
@@ -113,6 +128,7 @@ std::size_t Tensor::flatten_index(
     return index;
 }
 
+// Tensor <-> Tensor
 Tensor operator+(const Tensor& lhs, const Tensor& rhs) {
     return binary_operation(
         lhs,
@@ -149,6 +165,86 @@ Tensor operator/(const Tensor& lhs, const Tensor& rhs) {
         rhs,
         [](double a, double b) {
             return a / b;
+        }
+    );
+}
+
+// Unary
+Tensor operator-(const Tensor& tensor) {
+    return scalar_operation(
+        tensor,
+        0.0,
+        [](double value, double) {
+            return -value;
+        }
+    );
+}
+
+// Tensor <-> scalar
+Tensor operator+(const Tensor& tensor, double scalar) {
+    return scalar_operation(
+        tensor,
+        scalar,
+        [](double value, double scalar_value) {
+            return value + scalar_value;
+        }
+    );
+}
+
+Tensor operator+(double scalar, const Tensor& tensor) {
+    return tensor + scalar;
+}
+
+Tensor operator-(const Tensor& tensor, double scalar) {
+    return scalar_operation(
+        tensor,
+        scalar,
+        [](double value, double scalar_value) {
+            return value - scalar_value;
+        }
+    );
+}
+
+Tensor operator-(double scalar, const Tensor& tensor) {
+    return scalar_operation(
+        tensor,
+        scalar,
+        [](double value, double scalar_value) {
+            return scalar_value - value;
+        }
+    );
+}
+
+Tensor operator*(const Tensor& tensor, double scalar) {
+    return scalar_operation(
+        tensor,
+        scalar,
+        [](double value, double scalar_value) {
+            return value * scalar_value;
+        }
+    );
+}
+
+Tensor operator*(double scalar, const Tensor& tensor) {
+    return tensor * scalar;
+}
+
+Tensor operator/(const Tensor& tensor, double scalar) {
+    return scalar_operation(
+        tensor,
+        scalar,
+        [](double value, double scalar_value) {
+            return value / scalar_value;
+        }
+    );
+}
+
+Tensor operator/(double scalar, const Tensor& tensor) {
+    return scalar_operation(
+        tensor,
+        scalar,
+        [](double value, double scalar_value) {
+            return scalar_value / value;
         }
     );
 }

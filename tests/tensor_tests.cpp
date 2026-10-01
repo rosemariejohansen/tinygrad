@@ -213,21 +213,148 @@ void test_elementwise_shape_mismatch() {
     check(threw, "Element-wise operation rejects different shapes");
 }
 
+void test_unary_negation() {
+    tinygrad::Tensor tensor{
+        std::vector<double>{1.0, -2.0, 3.0},
+        std::vector<std::size_t>{3}
+    };
+
+    const tinygrad::Tensor result = -tensor;
+
+    check(
+        result.data() == std::vector<double>{-1.0, 2.0, -3.0},
+        "Unary negation"
+    );
+
+    check(
+        result.shape() == tensor.shape(),
+        "Unary negation preserves shape"
+    );
+}
+
+void test_tensor_scalar_addition() {
+    tinygrad::Tensor tensor{1.0, 2.0, 3.0};
+
+    const tinygrad::Tensor result = tensor + 10.0;
+
+    check(
+        result.data() == std::vector<double>{11.0, 12.0, 13.0},
+        "Tensor + scalar"
+    );
+}
+
+void test_scalar_tensor_addition() {
+    tinygrad::Tensor tensor{1.0, 2.0, 3.0};
+
+    const tinygrad::Tensor result = 10.0 + tensor;
+
+    check(
+        result.data() == std::vector<double>{11.0, 12.0, 13.0},
+        "Scalar + Tensor"
+    );
+}
+
+void test_tensor_scalar_subtraction() {
+    tinygrad::Tensor tensor{1.0, 2.0, 3.0};
+
+    const tinygrad::Tensor result = tensor - 10.0;
+
+    check(
+        result.data() == std::vector<double>{-9.0, -8.0, -7.0},
+        "Tensor - scalar"
+    );
+}
+
+void test_scalar_tensor_subtraction() {
+    tinygrad::Tensor tensor{1.0, 2.0, 3.0};
+
+    const tinygrad::Tensor result = 10.0 - tensor;
+
+    check(
+        result.data() == std::vector<double>{9.0, 8.0, 7.0},
+        "Scalar - Tensor"
+    );
+}
+
+void test_tensor_scalar_multiplication() {
+    tinygrad::Tensor tensor{1.0, 2.0, 3.0};
+
+    const tinygrad::Tensor result = tensor * 2.0;
+
+    check(
+        result.data() == std::vector<double>{2.0, 4.0, 6.0},
+        "Tensor * scalar"
+    );
+}
+
+void test_scalar_tensor_multiplication() {
+    tinygrad::Tensor tensor{1.0, 2.0, 3.0};
+
+    const tinygrad::Tensor result = 2.0 * tensor;
+
+    check(
+        result.data() == std::vector<double>{2.0, 4.0, 6.0},
+        "Scalar * Tensor"
+    );
+}
+
+void test_tensor_scalar_division() {
+    tinygrad::Tensor tensor{2.0, 4.0, 8.0};
+
+    const tinygrad::Tensor result = tensor / 2.0;
+
+    check(
+        result.data() == std::vector<double>{1.0, 2.0, 4.0},
+        "Tensor / scalar"
+    );
+}
+
+void test_scalar_tensor_division() {
+    tinygrad::Tensor tensor{2.0, 4.0, 8.0};
+
+    const tinygrad::Tensor result = 16.0 / tensor;
+
+    check(
+        result.data() == std::vector<double>{8.0, 4.0, 2.0},
+        "Scalar / Tensor"
+    );
+}
+
 }
 
 int main() {
     test_one_dimensional_tensor();
     test_two_dimensional_tensor();
+
     test_tensor_element_assignment();
+
     test_invalid_shape();
     test_invalid_number_of_indices();
+
     test_out_of_range_index();
+
     test_one_dimensional_initializer();
+
     test_elementwise_addition();
     test_elementwise_division();
     test_elementwise_multiplication();
     test_elementwise_subtraction();
+
     test_elementwise_shape_mismatch();
+
+    test_unary_negation();
+
+    test_tensor_scalar_addition();
+    test_scalar_tensor_addition();
+
+    test_tensor_scalar_subtraction();
+    test_scalar_tensor_subtraction();
+
+    test_tensor_scalar_multiplication();
+    test_scalar_tensor_multiplication();
+
+    test_tensor_scalar_division();
+    test_scalar_tensor_division();
 
     std::cout << "All Tensor tests passed.\n";
     return 0;  
