@@ -18,6 +18,8 @@ public:
     std::size_t size() const;
     std::size_t ndim() const;
 
+    double sum() const;
+
     const std::vector<std::size_t>& shape() const;
 
     double& at(const std::vector<std::size_t>& indices);
@@ -56,5 +58,7 @@ Tensor operator*(double scalar, const Tensor& tensor);
 
 Tensor operator/(const Tensor& tensor, double scalar);
 Tensor operator/(double scalar, const Tensor& tensor);
+
+Tensor matmul(const Tensor& lhs, const Tensor& rhs);
 
 }

@@ -82,6 +82,14 @@ std::size_t Tensor::ndim() const {
     return shape_.size();
 }
 
+double Tensor::sum() const {
+    return std::accumulate(
+        data_.begin(),
+        data_.end(),
+        0.0
+    );
+}
+
 const std::vector<std::size_t>& Tensor::shape() const {
     return shape_;
 }
@@ -98,6 +106,37 @@ const double& Tensor::at(
 
 const std::vector<double>& Tensor::data() const {
     return data_;
+}
+
+Tensor matmul(const Tensor& lhs, const Tensor& rhs) {
+    if(lhs.ndim() != 2 || rhs.ndim() != 2) {
+        throw std::invalid_argument("matmul: both tensors must be 2D");
+    }
+
+    const std::size_t m = lhs.shape()[0];
+    const std::size_t k = lhs.shape()[1];
+    const std::size_t n = rhs.shape()[1];
+
+    if(rhs.shape()[0] != k) {
+        throw std::invalid_argument("matmul: inner dimensions do not match");
+    }
+
+    const std::vector<double>& a = lhs.data();
+    const std::vector<double>& b = rhs.data();
+
+    std::vector<double> result(m * n, 0.0);
+
+    for(std::size_t i = 0; i < m; ++i) {
+        for(std::size_t p = 0; p < k; ++p) {
+            const double a_ip = a[i * k + p];
+
+            for(std::size_t j = 0; j < n; ++j) {
+                result[i * n + j] += a_ip * b[p * n + j];
+            }
+        }
+    }
+
+    return Tensor(std::move(result), std::vector<std::size_t>{m, n});
 }
 
 Tensor Tensor::reshape(
