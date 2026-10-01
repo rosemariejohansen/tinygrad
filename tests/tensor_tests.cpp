@@ -320,6 +320,83 @@ void test_scalar_tensor_division() {
     );
 }
 
+void test_reshape() {
+    tinygrad::Tensor tensor{
+        std::vector<double>{
+            1.0, 2.0, 3.0,
+            4.0, 5.0, 6.0
+        },
+        std::vector<std::size_t>{2, 3}
+    };
+
+    const tinygrad::Tensor reshaped =
+        tensor.reshape({3, 2});
+
+    check(
+        reshaped.shape() == std::vector<std::size_t>{3, 2},
+        "Reshape changes shape"
+    );
+
+    check(
+        reshaped.size() == 6,
+        "Reshape preserves number of elements"
+    );
+
+    check(reshaped.at({0, 0}) == 1.0, "Reshape [0, 0]");
+    check(reshaped.at({0, 1}) == 2.0, "Reshape [0, 1]");
+
+    check(reshaped.at({1, 0}) == 3.0, "Reshape [1, 0]");
+    check(reshaped.at({1, 1}) == 4.0, "Reshape [1, 1]");
+
+    check(reshaped.at({2, 0}) == 5.0, "Reshape [2, 0]");
+    check(reshaped.at({2, 1}) == 6.0, "Reshape [2, 1]");
+}
+
+void test_reshape_invalid_size() {
+    tinygrad::Tensor tensor{
+        std::vector<double>{
+            1.0, 2.0, 3.0,
+            4.0, 5.0, 6.0
+        },
+        std::vector<std::size_t>{2, 3}
+    };
+
+    bool threw = false;
+
+    try {
+        const auto reshaped = tensor.reshape({2, 2});
+    } catch (const std::invalid_argument&) {
+        threw = true;
+    }
+
+    check(
+        threw,
+        "Reshape rejects incompatible shape"
+    );
+}
+
+void test_reshape_does_not_modify_original() {
+    tinygrad::Tensor tensor{
+        std::vector<double>{
+            1.0, 2.0, 3.0,
+            4.0, 5.0, 6.0
+        },
+        std::vector<std::size_t>{2, 3}
+    };
+
+    const auto reshaped = tensor.reshape({6});
+
+    check(
+        tensor.shape() == std::vector<std::size_t>{2, 3},
+        "Reshape does not modify original shape"
+    );
+
+    check(
+        reshaped.shape() == std::vector<std::size_t>{6},
+        "Reshape creates new shape"
+    );
+}
+
 }
 
 int main() {
@@ -355,6 +432,10 @@ int main() {
 
     test_tensor_scalar_division();
     test_scalar_tensor_division();
+
+    test_reshape();
+    test_reshape_invalid_size();
+    test_reshape_does_not_modify_original();
 
     std::cout << "All Tensor tests passed.\n";
     return 0;  

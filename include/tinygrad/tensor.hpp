@@ -25,6 +25,9 @@ public:
 
     const std::vector<double>& data() const;
 
+    Tensor reshape(
+        std::vector<std::size_t> new_shape
+    ) const;
 private:
     std::vector<double> data_;
     std::vector<std::size_t> shape_;

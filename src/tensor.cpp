@@ -100,6 +100,26 @@ const std::vector<double>& Tensor::data() const {
     return data_;
 }
 
+Tensor Tensor::reshape(
+    std::vector<std::size_t> new_shape
+) const {
+    const std::size_t new_size = std::accumulate(
+        new_shape.begin(),
+        new_shape.end(),
+        std::size_t{1},
+        std::multiplies<>()
+    );
+
+    if(new_size != size()){
+        throw std::invalid_argument("New shape must contain the same number of elements");
+    }
+
+    return Tensor{
+        data_,
+        std::move(new_shape)
+    };
+}
+
 std::size_t Tensor::flatten_index(
     const std::vector<std::size_t>& indices
 ) const {
